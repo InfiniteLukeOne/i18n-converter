@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>I18nConverter</RootNamespace>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <Company>Lukas Gräfe</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="NPOI" Version="2.5.3" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="locales\de\test.json" />
+    <Content Include="locales\de\test.json" />
+    <None Remove="locales\de\translation.json" />
+    <Content Include="locales\de\translation.json" />
+    <None Remove="locales\en\test.json" />
+    <Content Include="locales\en\test.json" />
+  </ItemGroup>
+
+</Project>
