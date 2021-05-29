@@ -37,7 +37,7 @@ namespace I18nConverter
                 switch (outFormat)
                 {
                     case I18nConversionFormat.Excel:
-                        excelConverter.ToExcel(namespaces, options.Out);
+                        excelConverter.ToExcel(namespaces, options.Out, options.ColorEmpty);
                         break;
                     case I18nConversionFormat.Json:
                         jsonConverter.ToJson(namespaces, options.Out, options.Languages);

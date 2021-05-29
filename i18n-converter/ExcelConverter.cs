@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -73,20 +74,20 @@ namespace I18nConverter
         }
 
         public void ToExcel(Dictionary<string, Dictionary<string, Dictionary<string, string>>> namespaces,
-            string outPath)
+            string outPath, bool colorEmpty)
         {
             _logger.LogVerbose("Generating Excel...");
+            _logger.LogVerbose($"color-empty: {colorEmpty}");
 
             var i18NNamespaces = namespaces.Keys;
             var languages = namespaces.Values.SelectMany(n => n.Keys).Distinct().ToList();
 
             IWorkbook wb = new XSSFWorkbook();
             
-            var font = wb.CreateFont();
-            font.IsBold = true; 
-            var cellStyle = wb.CreateCellStyle();
-            cellStyle.SetFont(font);
-            
+            var headerCellStyle = CreateHeaderCellStyle(wb);
+
+            var emptyCellStyle = CreateEmptyCellStyle(wb);
+
             // ReSharper disable once InconsistentNaming
             foreach (var i18nNamespace in i18NNamespaces)
             {
@@ -95,14 +96,14 @@ namespace I18nConverter
                 
                 var keyHeaderCell = headerRow.CreateCell(0);
                 keyHeaderCell.SetCellValue("i18n-key");
-                keyHeaderCell.CellStyle = cellStyle;
+                keyHeaderCell.CellStyle = headerCellStyle;
                 
                 for (var languageIndex = 0; languageIndex < languages.Count; languageIndex++)
                 {
                     var language = languages[languageIndex];
                     var languageCell = headerRow.CreateCell(languageIndex + 1);
                     languageCell.SetCellValue(language);
-                    languageCell.CellStyle = cellStyle;
+                    languageCell.CellStyle = headerCellStyle;
                 }
 
                 if (namespaces.TryGetValue(i18nNamespace, out var namespaceDictionary))
@@ -121,16 +122,22 @@ namespace I18nConverter
 
                         var keyCell = row.CreateCell(0);
                         keyCell.SetCellValue(key);
-                        keyCell.CellStyle = cellStyle;
+                        keyCell.CellStyle = headerCellStyle;
 
                         var languageValues = languages.Select(l =>
                             namespaceDictionary.GetValueOrDefault(l)?.GetValueOrDefault(key)).ToList();
                         for (int languageIndex = 0; languageIndex < languageValues.Count; languageIndex++)
                         {
                             var value = languageValues[languageIndex];
-                            if (value != null)
+                            if (!string.IsNullOrEmpty(value))
                             {
                                 row.CreateCell(languageIndex + 1).SetCellValue(value);
+                            }
+                            else if (colorEmpty)
+                            {
+                                var cell = row.CreateCell(languageIndex + 1);
+                                cell.SetCellValue(string.Empty);
+                                cell.CellStyle = emptyCellStyle;
                             }
                         }
                     }
@@ -142,6 +149,23 @@ namespace I18nConverter
             {
                 wb.Write(fs);
             }
+        }
+
+        private static ICellStyle? CreateHeaderCellStyle(IWorkbook wb)
+        {
+            var font = wb.CreateFont();
+            font.IsBold = true;
+            var headerCellStyle = wb.CreateCellStyle();
+            headerCellStyle.SetFont(font);
+            return headerCellStyle;
+        }
+
+        private static ICellStyle? CreateEmptyCellStyle(IWorkbook wb)
+        {
+            var emptyCellStyle = wb.CreateCellStyle();
+            emptyCellStyle.FillForegroundColor = HSSFColor.LightOrange.Index;
+            emptyCellStyle.FillPattern = FillPattern.SolidForeground;
+            return emptyCellStyle;
         }
     }
 }

@@ -17,5 +17,8 @@ namespace I18nConverter
         
         [Option('l', "languages", Required = false, HelpText = "When converting to json-directory: Languages to convert. All if not specified.", Separator = ',')]
         public IEnumerable<string>? Languages { get; set; }
+        
+        [Option('e', "color-empty", Required = false, HelpText = "When converting to Excel-file: Color empty cells")]
+        public bool ColorEmpty { get; set; }
     }
 }
