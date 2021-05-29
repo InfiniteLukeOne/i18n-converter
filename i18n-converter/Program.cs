@@ -40,7 +40,7 @@ namespace I18nConverter
                         excelConverter.ToExcel(namespaces, options.Out);
                         break;
                     case I18nConversionFormat.Json:
-                        jsonConverter.ToJson(namespaces, options.Out);
+                        jsonConverter.ToJson(namespaces, options.Out, options.Languages);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

@@ -60,9 +60,19 @@ namespace I18nConverter
         }
 
         public void ToJson(Dictionary<string, Dictionary<string, Dictionary<string, string>>> namespaces,
-            string outPath)
+            string outPath, IEnumerable<string>? optionsLanguages)
         {
-            _logger.LogVerbose("Writing output...");
+            var languagesToConvert = optionsLanguages?.ToHashSet();
+
+            if (languagesToConvert == null || !languagesToConvert.Any())
+            {
+                _logger.LogVerbose("Writing output...");
+            }
+            else
+            {
+                _logger.LogVerbose($"Writing output for languages {string.Join(", ", languagesToConvert)}");
+            }
+
             var jsonSerializerOptions = new JsonSerializerOptions
             {
                 Converters = {new I18nJsonConverter()},
@@ -73,6 +83,11 @@ namespace I18nConverter
             {
                 foreach (var (language, languageDictionary) in namespaceDictionary)
                 {
+                    if (languagesToConvert != null && languagesToConvert.Any() && !languagesToConvert.Contains(language))
+                    {
+                        continue;
+                    }
+                    
                     var filePath = Path.Combine(outPath, language, i18nNamespace + ".json");
                     if (!languageDictionary.Any())
                     {

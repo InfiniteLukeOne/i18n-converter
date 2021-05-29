@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CommandLine;
 #pragma warning disable 8618
 
@@ -13,5 +14,8 @@ namespace I18nConverter
 
         [Option('o', "out", Required = true, HelpText = "Output Excel-file or json-directory.")]
         public string Out { get; set; }
+        
+        [Option('l', "languages", Required = false, HelpText = "When converting to json-directory: Languages to convert. All if not specified.", Separator = ',')]
+        public IEnumerable<string>? Languages { get; set; }
     }
 }
