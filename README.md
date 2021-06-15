@@ -3,11 +3,15 @@ Cross-platform console application for converting a json structure (as used by a
 
 ## Parameters
 ```
-  -v, --verbose    Set output to verbose messages.
+  -v, --verbose        Set output to verbose messages.
 
-  -i, --in         Required. Input Excel-file or json-directory.
+  -i, --in             Required. Input Excel-file or json-directory.
 
-  -o, --out        Required. Output Excel-file or json-directory.
+  -o, --out            Required. Output Excel-file or json-directory.
+  
+  -l, --languages      When converting to json-directory: Languages to convert. All if not specified.
+
+  -e, --color-empty    When converting to Excel-file: Color empty cells
 ```
 
 ## Excel format
