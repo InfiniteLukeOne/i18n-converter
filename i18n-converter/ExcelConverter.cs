@@ -9,6 +9,7 @@ namespace I18nConverter
 {
     public class ExcelConverter
     {
+        private const string KeyHeader = "i18n-key";
         private readonly Logger _logger;
 
         public ExcelConverter(Logger logger)
@@ -43,6 +44,10 @@ namespace I18nConverter
             foreach (var languageCell in languagesRow.Cells)
             {
                 var language = languageCell.StringCellValue;
+                if (language == KeyHeader)
+                {
+                    continue;
+                }
                 _logger.LogVerbose(language);
 
                 var languageDictionary = new Dictionary<string, string>();
@@ -95,7 +100,7 @@ namespace I18nConverter
                 IRow headerRow = s1.CreateRow(0);
                 
                 var keyHeaderCell = headerRow.CreateCell(0);
-                keyHeaderCell.SetCellValue("i18n-key");
+                keyHeaderCell.SetCellValue(KeyHeader);
                 keyHeaderCell.CellStyle = headerCellStyle;
                 
                 for (var languageIndex = 0; languageIndex < languages.Count; languageIndex++)

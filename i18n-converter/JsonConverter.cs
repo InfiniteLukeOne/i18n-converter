@@ -89,7 +89,7 @@ namespace I18nConverter
                     }
                     
                     var filePath = Path.Combine(outPath, language, i18nNamespace + ".json");
-                    if (!languageDictionary.Any())
+                    if (!languageDictionary.Any() && File.Exists(filePath))
                     {
                         File.Delete(filePath);
                         continue;
